@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Data
+@EqualsAndHashCode(exclude = {"recipes"}) /* To do not enter in a cicle reference on Lombok*/
 @Entity
 public class Category {
     @Id
