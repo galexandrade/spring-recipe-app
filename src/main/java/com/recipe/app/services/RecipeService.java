@@ -1,5 +1,6 @@
 package com.recipe.app.services;
 
+import com.recipe.app.commands.RecipeCommand;
 import com.recipe.app.domain.Recipe;
 
 import java.util.Set;
@@ -9,4 +10,8 @@ import java.util.Set;
  */
 public interface RecipeService {
     Set<Recipe> getRecipes();
+
+    Recipe findById(Long id);
+
+    RecipeCommand saveRecipeCommand(RecipeCommand command);
 }
