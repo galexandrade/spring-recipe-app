@@ -2,6 +2,7 @@ package com.recipe.app.controllers;
 
 import com.recipe.app.commands.RecipeCommand;
 import com.recipe.app.domain.Recipe;
+import com.recipe.app.exceptions.NotFoundException;
 import com.recipe.app.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +46,9 @@ public class RecipeControllerTest {
         MockitoAnnotations.initMocks(this);
 
         recipeCtrl = new RecipeController(recipeService);
-        mockMvc = MockMvcBuilders.standaloneSetup(recipeCtrl).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(recipeCtrl)
+                .setControllerAdvice(new ControllerExceptionHandler())
+                .build();
     }
 
     @Test
@@ -62,6 +65,26 @@ public class RecipeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/show"))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("recipe"));
+    }
+
+    @Test
+    public void testGetRecipeNotFound() throws Exception {
+
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/recipe/1/show"))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("404error"));
+    }
+
+    @Test
+    public void testGetRecipeNumberException() throws Exception {
+
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/recipe/aa/show"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("400error"));
     }
 
     @Test
@@ -85,6 +108,7 @@ public class RecipeControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", "")
                 .param("description", "some string")
+                .param("directions", "some directions")
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/recipe/2/show"));

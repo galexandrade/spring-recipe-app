@@ -4,6 +4,7 @@ import com.recipe.app.commands.RecipeCommand;
 import com.recipe.app.converters.RecipeCommandToRecipe;
 import com.recipe.app.converters.RecipeToRecipeCommand;
 import com.recipe.app.domain.Recipe;
+import com.recipe.app.exceptions.NotFoundException;
 import com.recipe.app.repositories.RecipeRepository;
 import com.sun.org.apache.regexp.internal.RE;
 import org.junit.Before;
@@ -73,6 +74,17 @@ public class RecipeServiceImplTest {
         verify(recipeRepository, never()).findById(anyLong());
     }
 
+    @Test(expected = NotFoundException.class)
+    public void getRecipeByIdTestNotFound() throws Exception {
+
+        Optional<Recipe> recipeOptional = Optional.empty();
+
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        Recipe recipeReturned = recipeService.findById(1L);
+
+        //should go boom
+    }
 
     @Test
     public void getRecipeCoomandByIdTest() throws Exception {
