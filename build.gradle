@@ -35,10 +35,15 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile 'org.webjars:bootstrap:3.3.7-1'
 	compile 'org.webjars:jquery:3.3.1'
+	compile group: 'mysql', name: 'mysql-connector-java'
 	compileOnly('org.projectlombok:lombok')
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('com.h2database:h2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+bootRun {
+	jvmArgs = ["-Dspring.profiles.active=default"]
 }
 
 jacocoTestReport {
